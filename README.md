@@ -34,6 +34,45 @@ yarn add nuxt-i18n
 
 ## Usage
 
+### Available languages
+
+To configure your app's languages, use the `locales` option and the `defaultLocale` option if needed:
+
+```js
+{
+  modules: [
+    ['nuxt-i18n', {
+      locales: [
+        {
+          code: 'en',
+          iso: 'en-US',
+          name: 'English'
+        },
+        {
+          code: 'fr',
+          iso: 'fr-FR',
+          name: 'Français'
+        }
+      ],
+      defaultLocale: 'en',
+      // ...
+    }]
+  ]
+}
+```
+These locales are used to generate the app's routes, the `code` will be used as the URL prefix (except for the default locale).
+
+`locales` and `defaultLocale` are both added to `app.i18n` which means you can refer to them in any component via the `$i18n` property:
+
+```vue
+<nuxt-link
+  v-for="(locale, index) in $i18n.locales"
+  v-if="locale.code !== $i18n.locale"
+  :key="index"
+  :exact="true"
+  :to="switchLocalePath(locale.code)">{{ locale.name }}</nuxt-link>
+```
+
 ### Translations
 
 Messages translation is achieved by **vue-i18n** which you can configure via the `vueI18n` option:
@@ -55,8 +94,9 @@ Messages translation is achieved by **vue-i18n** which you can configure via the
             category: 'Category'
           }
         },
-        fallbackLocale: 'en',
+        fallbackLocale: 'en'
       }
+      // ...
     }]
   ]
 }
@@ -70,7 +110,7 @@ Refer to [vue-i18n's doc](https://kazupon.github.io/vue-i18n/en/) for more info.
 
 > If you define a `defaultLocale`, the URL prefix is omitted for this language
 
-Let's say your app supports English (as the default language) and French, and you have this files structure for your pages:
+Say your app supports English (as the default language) and French, and you have this files structure for your pages:
 
 ```
 pages/
@@ -129,6 +169,8 @@ In the app, you'll need to preserve the language when generating URLs. To do thi
 <nuxt-link :to="switchLocalePath('en')">English</nuxt-link>
 <nuxt-link :to="switchLocalePath('fr')">Français</nuxt-link>
 ```
+
+> You might want to add `:exact=true` to your `<nuxt-link>` to prevent the `active-class` from being added somewhere you did not expect
 
 
 ## Options
